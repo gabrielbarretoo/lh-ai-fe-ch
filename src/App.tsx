@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { BriefViewer } from './components/BriefViewer';
 import { FileText, ShieldCheck } from 'lucide-react';
 import { sampleBrief } from './data/sampleBrief';
 import { Citation, VerificationResult } from './types';
+import clsx from 'clsx';
+import { DetailPanel } from './components';
 
 function App() {
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
@@ -23,10 +25,25 @@ function App() {
     return Math.round(total * 100);
   }, []);
 
-  const handleCitationClick = (citation: Citation, result: VerificationResult) => {
+
+  const selectCitation = (citation: Citation, result: VerificationResult) => {
     setSelectedCitation(citation);
     setSelectedResult(result);
-  };
+  }
+
+  const handleCitationClick = useCallback(
+    (citation: Citation, result: VerificationResult) => {
+      selectCitation(citation, result);
+    },
+    [selectCitation]
+  );
+
+  const handleCloseDrawer = useCallback(() => {
+    setSelectedCitation(null);
+    setSelectedResult(null);
+  }, []);
+
+  const isDrawerOpen = Boolean(selectedCitation && selectedResult);
 
   return (
     <div className="min-h-screen bg-stone-50 text-neutral-900">
@@ -67,6 +84,35 @@ function App() {
             selectedCitationId={selectedCitation?.id || null}
           />
         </div>
+      </div>
+
+      <div
+        className={clsx(
+          'fixed inset-0 z-40 transition',
+          isDrawerOpen ? 'pointer-events-auto' : 'pointer-events-none'
+        )}
+        aria-hidden={!isDrawerOpen}
+      >
+        <div
+          className={clsx(
+            'absolute inset-0 bg-neutral-900/20 transition-opacity duration-300',
+            isDrawerOpen ? 'opacity-100' : 'opacity-0'
+          )}
+          onClick={handleCloseDrawer}
+        />
+        <aside
+          className={clsx(
+            'absolute right-0 top-0 h-full w-full max-w-md border-l border-neutral-200 bg-white/90 px-6 py-8 shadow-2xl backdrop-blur transition-transform duration-300',
+            isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
+          )}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <DetailPanel
+            citation={selectedCitation}
+            result={selectedResult}
+            onClose={handleCloseDrawer}
+          />
+        </aside>
       </div>
     </div>
   );
