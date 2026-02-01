@@ -8,10 +8,10 @@
 - [x] Style h1, h2, ....
 - [x] Style citation
 [x] DetailPainel
-- [] Create a hidden side panel (click outside to close it)
-- [] Style the status
-- [] Details
-[] Citations Time line
+- [x] Create a hidden side panel (click outside to close it)
+- [x] Style the status
+- [x] Details
+[x] Citations Time line
 [] ShortCuts
 [] Extra styles
 [] Performance check

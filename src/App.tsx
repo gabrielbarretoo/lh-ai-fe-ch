@@ -5,10 +5,20 @@ import { sampleBrief } from './data/sampleBrief';
 import { Citation, VerificationResult } from './types';
 import clsx from 'clsx';
 import { DetailPanel } from './components';
+import { CitationsGuide } from './components/CitaionsGuide';
 
 function App() {
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
   const [selectedResult, setSelectedResult] = useState<VerificationResult | null>(null);
+
+
+  const resultsByCitationId = useMemo(() => {
+    return new Map(
+      sampleBrief.verificationResults.map((result) => [result.citationId, result])
+    );
+  }, []);
+
+  const citations = sampleBrief.citations;
 
   const healthScore = useMemo(() => {
     const weights: Record<string, number> = {
@@ -25,11 +35,24 @@ function App() {
     return Math.round(total * 100);
   }, []);
 
+  const scrollToCitation = useCallback((citationId: string) => {
+    const element = document.getElementById(`citation-${citationId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
 
-  const selectCitation = (citation: Citation, result: VerificationResult) => {
-    setSelectedCitation(citation);
-    setSelectedResult(result);
-  }
+  const selectCitation = useCallback(
+    (citation: Citation, result: VerificationResult, shouldScroll = false) => {
+      setSelectedCitation(citation);
+      setSelectedResult(result);
+
+      if (shouldScroll) {
+        requestAnimationFrame(() => scrollToCitation(citation.id));
+      }
+    },
+    [scrollToCitation]
+  );
 
   const handleCitationClick = useCallback(
     (citation: Citation, result: VerificationResult) => {
@@ -83,6 +106,8 @@ function App() {
             onCitationClick={handleCitationClick}
             selectedCitationId={selectedCitation?.id || null}
           />
+
+          <CitationsGuide citations={citations} resultsByCitationId={resultsByCitationId} selectedCitation={selectedCitation} selectCitation={selectCitation} />
         </div>
       </div>
 
