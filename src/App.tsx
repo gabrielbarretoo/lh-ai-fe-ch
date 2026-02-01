@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BriefViewer } from './components/BriefViewer';
 import { FileText, ShieldCheck } from 'lucide-react';
 import { sampleBrief } from './data/sampleBrief';
@@ -65,6 +65,64 @@ function App() {
     setSelectedCitation(null);
     setSelectedResult(null);
   }, []);
+
+  const jumpToCitation = useCallback(
+    (direction: 'next' | 'prev') => {
+      if (!citations.length) {
+        return;
+      }
+
+      let nextIndex = selectedCitation
+        ? citations.findIndex((citation) => citation.id === selectedCitation.id)
+        : -1;
+      if (nextIndex === -1) {
+        nextIndex = direction === 'next' ? 0 : citations.length - 1;
+      } else {
+        nextIndex =
+          (nextIndex + (direction === 'next' ? 1 : -1) + citations.length) %
+          citations.length;
+      }
+
+      const citation = citations[nextIndex];
+      const result = resultsByCitationId.get(citation.id);
+      if (result) {
+        selectCitation(citation, result, true);
+      }
+    },
+    [citations, resultsByCitationId, selectCitation, selectedCitation]
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTyping =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable;
+
+      if (isTyping) {
+        return;
+      }
+
+      if (event.key === 'Escape') {
+        handleCloseDrawer();
+        return;
+      }
+
+      if (event.key.toLowerCase() === 'j') {
+        event.preventDefault();
+        jumpToCitation('next');
+      }
+
+      if (event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        jumpToCitation('prev');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleCloseDrawer, jumpToCitation]);
 
   const isDrawerOpen = Boolean(selectedCitation && selectedResult);
 

@@ -12,6 +12,6 @@
 - [x] Style the status
 - [x] Details
 [x] Citations Time line
-[] ShortCuts
+[x] ShortCuts
 [] Extra styles
 [] Performance check
