@@ -13,5 +13,6 @@
 - [x] Details
 [x] Citations Time line
 [x] ShortCuts
-[] Extra styles
-[] Performance check
+[x] Extra styles
+[x] Performance check
+[x] States

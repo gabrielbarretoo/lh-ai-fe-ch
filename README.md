@@ -29,6 +29,22 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) to see the current state.
 
+## Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Production build
+npm run build
+
+# Preview production build
+npm run preview
+```
+
 ## Tech Stack
 
 **Provided:**
@@ -93,10 +109,20 @@ The starter includes a fictional motion to dismiss with 6 citations. The brief c
 - Update this README with setup instructions for your version
 
 ### 2. Design Rationale (500 words max)
-What decisions did you make and why? What trade-offs did you consider? What would you do with more time?
+I optimized the experience for trust, scannability, and speed—three things lawyers care about under deadline. The brief is the primary artifact, so I centered it and treated citations as in-context affordances rather than separate “errors.” A calm, editorial typographic system increases readability for dense text, while a restrained color palette reserves high-contrast accents for risk signals. The left rail provides persistent navigation and status filters, but the focus remains on the document.
+
+Interaction design prioritizes glanceable feedback. Citation markers use severity-based color and shape, with hover states that preview the issue and click states that open a focused detail panel. Subtle transitions help users maintain context when moving between citations. I added a minimap and inline counts to help users anticipate the work ahead without overwhelming them.
+
+I explicitly handled edge cases: empty results, loading state, and long briefs. Loading uses skeletons to preserve layout and reduce perceived delay. Empty states explain what “good” looks like and offer next actions. Long documents retain performance by avoiding unnecessary re-renders and minimizing DOM churn.
+
+Trade-offs: I avoided heavy component libraries to keep the UI bespoke and light, and kept animations restrained to respect professional environments. I also chose clarity over novelty—some elements (like the detail panel layout) are intentionally conservative to build confidence.
+
+With more time, I’d add collaboration features (annotations, sharing), deeper citation filtering, and keyboard shortcuts for power users. I’d also connect real-time data to show verification progress per citation and allow inline corrections when a quote mismatch is resolved.
 
 ### 3. Loom Video (3-5 minutes)
 Walk us through the experience as a user would encounter it. Highlight 1-2 technical decisions you're proud of. Show us something we might miss just clicking around.
+
+[Loom Video](https://www.loom.com/share/60d6d513d26a40359951e9fef5b7ef04)
 
 ## Time Budget
 
@@ -110,13 +136,17 @@ If you're past 6 hours, stop. A beautiful, polished subset beats a complete but 
 src/
 ├── components/
 │   ├── BriefViewer.tsx    # Renders brief with citation highlights
-│   └── DetailPanel.tsx    # Shows verification details for selected citation
+│   ├── CitaionsGuide.tsx  # Reference legend for citation statuses
+│   ├── DetailPanel.tsx    # Shows verification details for selected citation
+│   └── index.ts           # Components barrel export
 ├── data/
 │   └── sampleBrief.ts     # Sample brief and verification results
+├── index.css              # Global styles and Tailwind layers
 ├── types/
 │   └── index.ts           # TypeScript interfaces
 ├── App.tsx                # Main app component
-└── main.tsx               # Entry point
+├── main.tsx               # Entry point
+└── vite-env.d.ts          # Vite type definitions
 ```
 
 ## Questions?
