@@ -50,6 +50,11 @@ export function CitationsGuide({ citations, resultsByCitationId, selectedCitatio
                         );
                     })}
                 </div>
+
+                <div className="rounded-xl border border-dashed border-neutral-200 px-3 py-2 text-[11px] text-neutral-500">
+                    Use <span className="font-semibold">J</span>/<span className="font-semibold">K</span> to
+                    navigate.
+                </div>
             </div>
         </aside>
     )
